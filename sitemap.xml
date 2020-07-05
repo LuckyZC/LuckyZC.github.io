@@ -2,8 +2,8 @@
     xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
     xmlns:xhtml="http://www.w3.org/1999/xhtml"
     ><url>
-            <loc>https:///www.cofl.top/</loc><lastmod>2020-07-01T21:25:42&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https:///www.cofl.top/posts/first/</loc><lastmod>2020-07-01T21:25:42&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https:///www.cofl.top/posts/</loc><lastmod>2020-07-01T21:25:42&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
-            <loc>https:///www.cofl.top/categories/</loc><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
-            <loc>https:///www.cofl.top/tags/</loc><changefreq>weekly</changefreq><priority>0.5</priority></url></urlset>
+            <loc>/</loc><lastmod>2020-07-01T21:25:42&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>/posts/first/</loc><lastmod>2020-07-01T21:25:42&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>/posts/</loc><lastmod>2020-07-01T21:25:42&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>/categories/</loc><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>/tags/</loc><changefreq>weekly</changefreq><priority>0.5</priority></url></urlset>
