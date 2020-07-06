@@ -1,12 +1,10 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
-        <title>Cofl杂货铺</title>
-        <link>/</link>
-        <description>Cofl杂货铺</description>
+        <title>测试 - 分类 - Cofl杂货铺</title>
+        <link>/categories/%E6%B5%8B%E8%AF%95/</link>
+        <description>测试 - 分类 - Cofl杂货铺</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>zcofl@qq.com (Cofl)</managingEditor>
-            <webMaster>zcofl@qq.com (Cofl)</webMaster><lastBuildDate>Wed, 01 Jul 2020 21:25:42 &#43;0800</lastBuildDate>
-            <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
-        <item>
+            <webMaster>zcofl@qq.com (Cofl)</webMaster><lastBuildDate>Wed, 01 Jul 2020 21:25:42 &#43;0800</lastBuildDate><atom:link href="/categories/%E6%B5%8B%E8%AF%95/" rel="self" type="application/rss+xml" /><item>
     <title>First</title>
     <link>/posts/first/</link>
     <pubDate>Wed, 01 Jul 2020 21:25:42 &#43;0800</pubDate>

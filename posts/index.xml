@@ -1,14 +1,14 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
-        <title>All Posts - Cofl杂货铺</title>
+        <title>所有文章 - Cofl杂货铺</title>
         <link>/posts/</link>
-        <description>All Posts | Cofl杂货铺</description>
+        <description>所有文章 | Cofl杂货铺</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>zcofl@qq.com (Cofl)</managingEditor>
             <webMaster>zcofl@qq.com (Cofl)</webMaster><lastBuildDate>Wed, 01 Jul 2020 21:25:42 &#43;0800</lastBuildDate><atom:link href="/posts/" rel="self" type="application/rss+xml" /><item>
     <title>First</title>
     <link>/posts/first/</link>
     <pubDate>Wed, 01 Jul 2020 21:25:42 &#43;0800</pubDate>
-    <author>Author</author>
+    <author>作者</author>
     <guid>/posts/first/</guid>
     <description><![CDATA[#1111
 ##123123123]]></description>
