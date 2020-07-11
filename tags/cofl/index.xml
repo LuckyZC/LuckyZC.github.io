@@ -1,10 +1,10 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
-        <title>所有文章 - Cofl杂货铺</title>
-        <link>/posts/</link>
-        <description>所有文章 | Cofl杂货铺</description>
+        <title>cofl - 标签 - Cofl杂货铺</title>
+        <link>/tags/cofl/</link>
+        <description>cofl - 标签 - Cofl杂货铺</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>zcofl@qq.com (Cofl)</managingEditor>
-            <webMaster>zcofl@qq.com (Cofl)</webMaster><lastBuildDate>Sat, 11 Jul 2020 21:20:42 &#43;0800</lastBuildDate><atom:link href="/posts/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>zcofl@qq.com (Cofl)</webMaster><lastBuildDate>Sat, 11 Jul 2020 21:20:42 &#43;0800</lastBuildDate><atom:link href="/tags/cofl/" rel="self" type="application/rss+xml" /><item>
     <title>为什么开了这个博客？</title>
     <link>/posts/first/</link>
     <pubDate>Sat, 11 Jul 2020 21:20:42 &#43;0800</pubDate>

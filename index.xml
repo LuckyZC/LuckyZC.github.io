@@ -4,15 +4,15 @@
         <link>/</link>
         <description>Cofl杂货铺</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>zcofl@qq.com (Cofl)</managingEditor>
-            <webMaster>zcofl@qq.com (Cofl)</webMaster><lastBuildDate>Wed, 01 Jul 2020 21:25:42 &#43;0800</lastBuildDate>
+            <webMaster>zcofl@qq.com (Cofl)</webMaster><lastBuildDate>Sat, 11 Jul 2020 21:20:42 &#43;0800</lastBuildDate>
             <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
         <item>
-    <title>First</title>
+    <title>为什么开了这个博客？</title>
     <link>/posts/first/</link>
-    <pubDate>Wed, 01 Jul 2020 21:25:42 &#43;0800</pubDate>
+    <pubDate>Sat, 11 Jul 2020 21:20:42 &#43;0800</pubDate>
     <author>作者</author>
     <guid>/posts/first/</guid>
-    <description><![CDATA[#1111
-##123123123]]></description>
+    <description><![CDATA[  对于我个人来说，最能学到东西的就是自己亲自解决的一个问题（很可能是bug），或者是给他人解决一个疑问，亦或者是为了给他人讲解一些问题。 就像上学时做数学题一样，自己做出来了印象深刻，去讲台把这道题讲解给同学们并且解答同学提出的疑惑后印象更为深刻，理解更为透彻。
+ 这也许就是最适合我的学习方式。因此搭建了这个博客。  抽象生活工作中遇到的问题，亲自解决并记录再此 希望在能力范围内帮助一些人解决问题，并让自己学到更多 没准还能顺便赚个零花钱  ]]></description>
 </item></channel>
 </rss>
