@@ -1,12 +1,10 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
-        <title>Cofl杂货铺</title>
-        <link>/</link>
-        <description>Cofl杂货铺</description>
+        <title>MongoDB内嵌数组 - 标签 - Cofl杂货铺</title>
+        <link>/tags/mongodb%E5%86%85%E5%B5%8C%E6%95%B0%E7%BB%84/</link>
+        <description>MongoDB内嵌数组 - 标签 - Cofl杂货铺</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>zcofl@qq.com (Cofl)</managingEditor>
-            <webMaster>zcofl@qq.com (Cofl)</webMaster><lastBuildDate>Mon, 13 Jul 2020 22:33:35 &#43;0800</lastBuildDate>
-            <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
-        <item>
+            <webMaster>zcofl@qq.com (Cofl)</webMaster><lastBuildDate>Mon, 13 Jul 2020 22:33:35 &#43;0800</lastBuildDate><atom:link href="/tags/mongodb%E5%86%85%E5%B5%8C%E6%95%B0%E7%BB%84/" rel="self" type="application/rss+xml" /><item>
     <title>MongoDB如何查询出所有二维数组中的内容并返回相应的数组</title>
     <link>/posts/mongo_aggregate/</link>
     <pubDate>Mon, 13 Jul 2020 22:33:35 &#43;0800</pubDate>
@@ -16,13 +14,5 @@
 首先一步要做的就是要把家长的登录信息和填写的孩子信息进行存储，这里我们使用的是MongoDB，肯定优先会把所有信息存储到一个文档中。文档大致结构如下
   整体信息是一个文档，可以看做一个文档为一个家庭 父母可能为多个，所以使用内嵌数组存储 孩子同样可能为多个，同样使用内嵌数组来存储    MongoDB文档结构大概如下
 { _id: ObjectId(&quot;5f06ae15cf20bc8fea5cf982&quot;), patients: [ { p_id: &quot;nxM81594361333&quot;, name: &quot;cofl&quot;, sex: &quot;男&quot;, tel: &quot;12222222222&quot;, birth_year: &quot;2000&quot;, school_id: &quot;B0FFGAPLTR&quot;, school_name: &quot;xxxxxxx&quot;, grade_id: &quot;g01&quot;, grade_name: &quot;一年级&quot;, class_id: &quot;c01&quot;, class_name: &quot;一班&quot;, add_time: NumberLong(1594361333) }, { p_id: &quot;nxM81594363774&quot;, name: &quot;cofl111&quot;, sex: &quot;男&quot;, tel: &quot;12222222333&quot;, birth_year: &quot;2000&quot;, school_id: &quot;B0FFGAPLTR&quot;, school_name: &quot;xxxxxxxx&quot;, grade_id: &quot;g01&quot;, grade_name: &quot;一年级&quot;, class_id: &quot;c01&quot;, class_name: &quot;一班&quot;, add_time: NumberLong(1594363774) }, { p_id: &quot;nxM81594365730&quot;, name: &quot;cofl222&quot;, sex: &quot;男&quot;, tel: &quot;19999222233&quot;, birth_year: &quot;2000&quot;, school_id: &quot;xxxxxxx&quot;, school_name: &quot;xxxxxxx&quot;, grade_id: &quot;g01&quot;, grade_name: &quot;一年级&quot;, class_id: &quot;c01&quot;, class_name: &quot;一班&quot;, add_time: NumberLong(1594365730) } ], parents: [ { openid: &quot;xxxxxxxxxxxx&quot;, nickname: &quot;cofl&quot;, sex: 1, city: &quot;朝阳&quot;, province: &quot;北京&quot;, country: &quot;中国&quot; } ] } 具体遇到的问题  父母及孩子都是内嵌数组，所以需要对MongoDB内嵌array的增删改查 在某些场景需要将所有的学生（孩子）信息进行列表展示，所以我们需要将学生信息查询出来  首先我们排除直接查询所有文档然后在进行遍历组合学生list的方案 再次我们希望能通过sql直接查询到所有学生并可以进行排序，以及支持页面分页展示。    请开始你的表演  项目使用golang进行的开发，所以引用的部分代码均为golang代码]]></description>
-</item><item>
-    <title>为什么开了这个博客？</title>
-    <link>/posts/first/</link>
-    <pubDate>Sat, 11 Jul 2020 21:20:42 &#43;0800</pubDate>
-    <author>作者</author>
-    <guid>/posts/first/</guid>
-    <description><![CDATA[  对于我个人来说，最能学到东西的就是自己亲自解决的一个问题（很可能是bug），或者是给他人解决一个疑问，亦或者是为了给他人讲解一些问题。 就像上学时做数学题一样，自己做出来了印象深刻，去讲台把这道题讲解给同学们并且解答同学提出的疑惑后印象更为深刻，理解更为透彻。
- 这也许就是最适合我的学习方式。因此搭建了这个博客。  抽象生活工作中遇到的问题，亲自解决并记录再此 希望在能力范围内帮助一些人解决问题，并让自己学到更多 占位先 想到慢慢补充 没准还能顺便赚个零花钱（这是个美好的愿望）  ]]></description>
 </item></channel>
 </rss>

@@ -4,7 +4,14 @@
         <link>/categories/</link>
         <description>Categories - 分类 - Cofl杂货铺</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>zcofl@qq.com (Cofl)</managingEditor>
-            <webMaster>zcofl@qq.com (Cofl)</webMaster><lastBuildDate>Sat, 11 Jul 2020 21:20:42 &#43;0800</lastBuildDate><atom:link href="/categories/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>zcofl@qq.com (Cofl)</webMaster><lastBuildDate>Mon, 13 Jul 2020 22:33:35 &#43;0800</lastBuildDate><atom:link href="/categories/" rel="self" type="application/rss+xml" /><item>
+    <title>MongoDB</title>
+    <link>/categories/mongodb/</link>
+    <pubDate>Mon, 13 Jul 2020 22:33:35 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>/categories/mongodb/</guid>
+    <description><![CDATA[]]></description>
+</item><item>
     <title>cofl</title>
     <link>/categories/cofl/</link>
     <pubDate>Sat, 11 Jul 2020 21:20:42 &#43;0800</pubDate>

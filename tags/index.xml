@@ -4,7 +4,28 @@
         <link>/tags/</link>
         <description>Tags - 标签 - Cofl杂货铺</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>zcofl@qq.com (Cofl)</managingEditor>
-            <webMaster>zcofl@qq.com (Cofl)</webMaster><lastBuildDate>Sat, 11 Jul 2020 21:20:42 &#43;0800</lastBuildDate><atom:link href="/tags/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>zcofl@qq.com (Cofl)</webMaster><lastBuildDate>Mon, 13 Jul 2020 22:33:35 &#43;0800</lastBuildDate><atom:link href="/tags/" rel="self" type="application/rss+xml" /><item>
+    <title>MongoDB</title>
+    <link>/tags/mongodb/</link>
+    <pubDate>Mon, 13 Jul 2020 22:33:35 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>/tags/mongodb/</guid>
+    <description><![CDATA[]]></description>
+</item><item>
+    <title>MongoDB内嵌数组</title>
+    <link>/tags/mongodb%E5%86%85%E5%B5%8C%E6%95%B0%E7%BB%84/</link>
+    <pubDate>Mon, 13 Jul 2020 22:33:35 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>/tags/mongodb%E5%86%85%E5%B5%8C%E6%95%B0%E7%BB%84/</guid>
+    <description><![CDATA[]]></description>
+</item><item>
+    <title>聚合查询</title>
+    <link>/tags/%E8%81%9A%E5%90%88%E6%9F%A5%E8%AF%A2/</link>
+    <pubDate>Mon, 13 Jul 2020 22:33:35 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>/tags/%E8%81%9A%E5%90%88%E6%9F%A5%E8%AF%A2/</guid>
+    <description><![CDATA[]]></description>
+</item><item>
     <title>cofl</title>
     <link>/tags/cofl/</link>
     <pubDate>Sat, 11 Jul 2020 21:20:42 &#43;0800</pubDate>

@@ -10,7 +10,7 @@
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="/" />
-<meta property="og:updated_time" content="2020-07-11T21:20:42+08:00" />
+<meta property="og:updated_time" content="2020-07-13T22:33:35+08:00" />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Cofl杂货铺"/>
 <meta name="twitter:description" content=""/>
@@ -73,9 +73,17 @@
         alt="https://tvax3.sinaimg.cn/crop.0.0.1242.1242.180/8ab82391ly8fj323zknhnj20yi0yit9k.jpg"
         title="https://tvax3.sinaimg.cn/crop.0.0.1242.1242.180/8ab82391ly8fj323zknhnj20yi0yit9k.jpg" /></a></div><h1 class="home-title">I am cofl</h1><h2 class="home-subtitle"><div id="id-1" class="typeit"></div></h2><div class="links"></div></div>
 <article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
+        <a href="/posts/mongo_aggregate/">MongoDB如何查询出所有二维数组中的内容并返回相应的数组</a>
+    </h1><div class="post-meta"><span class="post-author"><a href="http://www.cofl.top" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw"></i>Cofl</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2020-07-13">2020-07-13</time></span>&nbsp;<span class="post-category">收录于 <a href="/categories/mongodb/"><i class="far fa-folder fa-fw"></i>MongoDB</a></span></div><div class="content">场景简介  一个在学校使用的公众号，公众号需要家长在微信中为自己的孩子进行注册然后进行一些后续的操作。这里我们要考虑到多位家长绑定同一个孩子和一个家长绑定多个孩子的场景。
+首先一步要做的就是要把家长的登录信息和填写的孩子信息进行存储，这里我们使用的是MongoDB，肯定优先会把所有信息存储到一个文档中。文档大致结构如下
+  整体信息是一个文档，可以看做一个文档为一个家庭 父母可能为多个，所以使用内嵌数组存储 孩子同样可能为多个，同样使用内嵌数组来存储    MongoDB文档结构大概如下
+{ _id: ObjectId(&quot;5f06ae15cf20bc8fea5cf982&quot;), patients: [ { p_id: &quot;nxM81594361333&quot;, name: &quot;cofl&quot;, sex: &quot;男&quot;, tel: &quot;12222222222&quot;, birth_year: &quot;2000&quot;, school_id: &quot;B0FFGAPLTR&quot;, school_name: &quot;xxxxxxx&quot;, grade_id: &quot;g01&quot;, grade_name: &quot;一年级&quot;, class_id: &quot;c01&quot;, class_name: &quot;一班&quot;, add_time: NumberLong(1594361333) }, { p_id: &quot;nxM81594363774&quot;, name: &quot;cofl111&quot;, sex: &quot;男&quot;, tel: &quot;12222222333&quot;, birth_year: &quot;2000&quot;, school_id: &quot;B0FFGAPLTR&quot;, school_name: &quot;xxxxxxxx&quot;, grade_id: &quot;g01&quot;, grade_name: &quot;一年级&quot;, class_id: &quot;c01&quot;, class_name: &quot;一班&quot;, add_time: NumberLong(1594363774) }, { p_id: &quot;nxM81594365730&quot;, name: &quot;cofl222&quot;, sex: &quot;男&quot;, tel: &quot;19999222233&quot;, birth_year: &quot;2000&quot;, school_id: &quot;xxxxxxx&quot;, school_name: &quot;xxxxxxx&quot;, grade_id: &quot;g01&quot;, grade_name: &quot;一年级&quot;, class_id: &quot;c01&quot;, class_name: &quot;一班&quot;, add_time: NumberLong(1594365730) } ], parents: [ { openid: &quot;xxxxxxxxxxxx&quot;, nickname: &quot;cofl&quot;, sex: 1, city: &quot;朝阳&quot;, province: &quot;北京&quot;, country: &quot;中国&quot; } ] } 具体遇到的问题  父母及孩子都是内嵌数组，所以需要对MongoDB内嵌array的增删改查 在某些场景需要将所有的学生（孩子）信息进行列表展示，所以我们需要将学生信息查询出来  首先我们排除直接查询所有文档然后在进行遍历组合学生list的方案 再次我们希望能通过sql直接查询到所有学生并可以进行排序，以及支持页面分页展示。    请开始你的表演  项目使用golang进行的开发，所以引用的部分代码均为golang代码</div><div class="post-footer">
+        <a href="/posts/mongo_aggregate/">阅读全文</a><div class="post-tags">
+                <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/mongodb/">MongoDB</a>,&nbsp;<a href="/tags/%E8%81%9A%E5%90%88%E6%9F%A5%E8%AF%A2/">聚合查询</a>,&nbsp;<a href="/tags/mongodb%E5%86%85%E5%B5%8C%E6%95%B0%E7%BB%84/">MongoDB内嵌数组</a></div></div>
+</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
         <a href="/posts/first/">为什么开了这个博客？</a>
     </h1><div class="post-meta"><span class="post-author"><a href="http://www.cofl.top" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw"></i>Cofl</a></span>&nbsp;<span class="post-publish">发布于 <time datetime="2020-07-11">2020-07-11</time></span>&nbsp;<span class="post-category">收录于 <a href="/categories/cofl/"><i class="far fa-folder fa-fw"></i>cofl</a></span></div><div class="content">  对于我个人来说，最能学到东西的就是自己亲自解决的一个问题（很可能是bug），或者是给他人解决一个疑问，亦或者是为了给他人讲解一些问题。 就像上学时做数学题一样，自己做出来了印象深刻，去讲台把这道题讲解给同学们并且解答同学提出的疑惑后印象更为深刻，理解更为透彻。
- 这也许就是最适合我的学习方式。因此搭建了这个博客。  抽象生活工作中遇到的问题，亲自解决并记录再此 希望在能力范围内帮助一些人解决问题，并让自己学到更多 没准还能顺便赚个零花钱  </div><div class="post-footer">
+ 这也许就是最适合我的学习方式。因此搭建了这个博客。  抽象生活工作中遇到的问题，亲自解决并记录再此 希望在能力范围内帮助一些人解决问题，并让自己学到更多 占位先 想到慢慢补充 没准还能顺便赚个零花钱（这是个美好的愿望）  </div><div class="post-footer">
         <a href="/posts/first/">阅读全文</a><div class="post-tags">
                 <i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/cofl/">cofl</a></div></div>
 </article></div></div>

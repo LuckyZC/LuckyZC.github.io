@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>MongoDB如何查询出所有二维数组中的内容并返回相应的数组 - Cofl杂货铺</title><meta name="Description" content=""><meta property="og:title" content="MongoDB如何查询出所有二维数组中的内容并返回相应的数组" />
+<meta property="og:description" content="场景简介  一个在学校使用的公众号，公众号需要家长在微信中为自己的孩子进行注册然后进行一些后续的操作。这里我们要考虑到多位家长绑定同一个孩子和一个家长绑定多个孩子的场景。
+首先一步要做的就是要把家长的登录信息和填写的孩子信息进行存储，这里我们使用的是MongoDB，肯定优先会把所有信息存储到一个文档中。文档大致结构如下
+  整体信息是一个文档，可以看做一个文档为一个家庭 父母可能为多个，所以使用内嵌数组存储 孩子同样可能为多个，同样使用内嵌数组来存储    MongoDB文档结构大概如下
+{ _id: ObjectId(&quot;5f06ae15cf20bc8fea5cf982&quot;), patients: [ { p_id: &quot;nxM81594361333&quot;, name: &quot;cofl&quot;, sex: &quot;男&quot;, tel: &quot;12222222222&quot;, birth_year: &quot;2000&quot;, school_id: &quot;B0FFGAPLTR&quot;, school_name: &quot;xxxxxxx&quot;, grade_id: &quot;g01&quot;, grade_name: &quot;一年级&quot;, class_id: &quot;c01&quot;, class_name: &quot;一班&quot;, add_time: NumberLong(1594361333) }, { p_id: &quot;nxM81594363774&quot;, name: &quot;cofl111&quot;, sex: &quot;男&quot;, tel: &quot;12222222333&quot;, birth_year: &quot;2000&quot;, school_id: &quot;B0FFGAPLTR&quot;, school_name: &quot;xxxxxxxx&quot;, grade_id: &quot;g01&quot;, grade_name: &quot;一年级&quot;, class_id: &quot;c01&quot;, class_name: &quot;一班&quot;, add_time: NumberLong(1594363774) }, { p_id: &quot;nxM81594365730&quot;, name: &quot;cofl222&quot;, sex: &quot;男&quot;, tel: &quot;19999222233&quot;, birth_year: &quot;2000&quot;, school_id: &quot;xxxxxxx&quot;, school_name: &quot;xxxxxxx&quot;, grade_id: &quot;g01&quot;, grade_name: &quot;一年级&quot;, class_id: &quot;c01&quot;, class_name: &quot;一班&quot;, add_time: NumberLong(1594365730) } ], parents: [ { openid: &quot;xxxxxxxxxxxx&quot;, nickname: &quot;cofl&quot;, sex: 1, city: &quot;朝阳&quot;, province: &quot;北京&quot;, country: &quot;中国&quot; } ] } 具体遇到的问题  父母及孩子都是内嵌数组，所以需要对MongoDB内嵌array的增删改查 在某些场景需要将所有的学生（孩子）信息进行列表展示，所以我们需要将学生信息查询出来  首先我们排除直接查询所有文档然后在进行遍历组合学生list的方案 再次我们希望能通过sql直接查询到所有学生并可以进行排序，以及支持页面分页展示。    请开始你的表演  项目使用golang进行的开发，所以引用的部分代码均为golang代码" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/posts/mongo_aggregate/" />
+<meta property="article:published_time" content="2020-07-13T22:33:35+08:00" />
+<meta property="article:modified_time" content="2020-07-13T22:33:35+08:00" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="MongoDB如何查询出所有二维数组中的内容并返回相应的数组"/>
+<meta name="twitter:description" content="场景简介  一个在学校使用的公众号，公众号需要家长在微信中为自己的孩子进行注册然后进行一些后续的操作。这里我们要考虑到多位家长绑定同一个孩子和一个家长绑定多个孩子的场景。
+首先一步要做的就是要把家长的登录信息和填写的孩子信息进行存储，这里我们使用的是MongoDB，肯定优先会把所有信息存储到一个文档中。文档大致结构如下
+  整体信息是一个文档，可以看做一个文档为一个家庭 父母可能为多个，所以使用内嵌数组存储 孩子同样可能为多个，同样使用内嵌数组来存储    MongoDB文档结构大概如下
+{ _id: ObjectId(&quot;5f06ae15cf20bc8fea5cf982&quot;), patients: [ { p_id: &quot;nxM81594361333&quot;, name: &quot;cofl&quot;, sex: &quot;男&quot;, tel: &quot;12222222222&quot;, birth_year: &quot;2000&quot;, school_id: &quot;B0FFGAPLTR&quot;, school_name: &quot;xxxxxxx&quot;, grade_id: &quot;g01&quot;, grade_name: &quot;一年级&quot;, class_id: &quot;c01&quot;, class_name: &quot;一班&quot;, add_time: NumberLong(1594361333) }, { p_id: &quot;nxM81594363774&quot;, name: &quot;cofl111&quot;, sex: &quot;男&quot;, tel: &quot;12222222333&quot;, birth_year: &quot;2000&quot;, school_id: &quot;B0FFGAPLTR&quot;, school_name: &quot;xxxxxxxx&quot;, grade_id: &quot;g01&quot;, grade_name: &quot;一年级&quot;, class_id: &quot;c01&quot;, class_name: &quot;一班&quot;, add_time: NumberLong(1594363774) }, { p_id: &quot;nxM81594365730&quot;, name: &quot;cofl222&quot;, sex: &quot;男&quot;, tel: &quot;19999222233&quot;, birth_year: &quot;2000&quot;, school_id: &quot;xxxxxxx&quot;, school_name: &quot;xxxxxxx&quot;, grade_id: &quot;g01&quot;, grade_name: &quot;一年级&quot;, class_id: &quot;c01&quot;, class_name: &quot;一班&quot;, add_time: NumberLong(1594365730) } ], parents: [ { openid: &quot;xxxxxxxxxxxx&quot;, nickname: &quot;cofl&quot;, sex: 1, city: &quot;朝阳&quot;, province: &quot;北京&quot;, country: &quot;中国&quot; } ] } 具体遇到的问题  父母及孩子都是内嵌数组，所以需要对MongoDB内嵌array的增删改查 在某些场景需要将所有的学生（孩子）信息进行列表展示，所以我们需要将学生信息查询出来  首先我们排除直接查询所有文档然后在进行遍历组合学生list的方案 再次我们希望能通过sql直接查询到所有学生并可以进行排序，以及支持页面分页展示。    请开始你的表演  项目使用golang进行的开发，所以引用的部分代码均为golang代码"/>
+<meta name="application-name" content="Cofl杂货铺">
+<meta name="apple-mobile-web-app-title" content="Cofl杂货铺"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="/posts/mongo_aggregate/" /><link rel="prev" href="/posts/first/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "MongoDB如何查询出所有二维数组中的内容并返回相应的数组",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "\/posts\/mongo_aggregate\/"
+        },"genre": "posts","keywords": "MongoDB, 聚合查询, MongoDB内嵌数组","wordcount":  469 ,
+        "url": "\/posts\/mongo_aggregate\/","datePublished": "2020-07-13T22:33:35+08:00","dateModified": "2020-07-13T22:33:35+08:00","publisher": {
+            "@type": "Organization",
+            "name": "Cofl"},"author": {
+                "@type": "Person",
+                "name": "Cofl"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : '' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Cofl杂货铺">Cofl杂货铺</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Cofl杂货铺">Cofl杂货铺</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">MongoDB如何查询出所有二维数组中的内容并返回相应的数组</h1><h2 class="single-subtitle">MongoDB聚合查询及array相关操作</h2><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="http://www.cofl.top" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw"></i>Cofl</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/mongodb/"><i class="far fa-folder fa-fw"></i>MongoDB</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-07-13">2020-07-13</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 469 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 3 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#场景简介">场景简介</a></li>
+        <li><a href="#具体遇到的问题">具体遇到的问题</a></li>
+        <li><a href="#请开始你的表演">请开始你的表演</a></li>
+        <li><a href="#总结">总结</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h3 id="场景简介">场景简介</h3>
+<blockquote>
+<p>一个在学校使用的公众号，公众号需要家长在微信中为自己的孩子进行注册然后进行一些后续的操作。这里我们要考虑到多位家长绑定同一个孩子和一个家长绑定多个孩子的场景。</p>
+<p>首先一步要做的就是要把家长的登录信息和填写的孩子信息进行存储，这里我们使用的是MongoDB，肯定优先会把所有信息存储到一个文档中。文档大致结构如下</p>
+<blockquote>
+<ul>
+<li>整体信息是一个文档，可以看做一个文档为一个家庭</li>
+<li>父母可能为多个，所以使用内嵌数组存储</li>
+<li>孩子同样可能为多个，同样使用内嵌数组来存储</li>
+</ul>
+</blockquote>
+</blockquote>
+<p><strong>MongoDB文档结构大概如下</strong></p>
+<pre><code>{
+        _id: ObjectId(&quot;5f06ae15cf20bc8fea5cf982&quot;),
+        patients: [
+            {
+                p_id: &quot;nxM81594361333&quot;,
+                name: &quot;cofl&quot;,
+                sex: &quot;男&quot;,
+                tel: &quot;12222222222&quot;,
+                birth_year: &quot;2000&quot;,
+                school_id: &quot;B0FFGAPLTR&quot;,
+                school_name: &quot;xxxxxxx&quot;,
+                grade_id: &quot;g01&quot;,
+                grade_name: &quot;一年级&quot;,
+                class_id: &quot;c01&quot;,
+                class_name: &quot;一班&quot;,
+                add_time: NumberLong(1594361333)
+            },
+            {
+                p_id: &quot;nxM81594363774&quot;,
+                name: &quot;cofl111&quot;,
+                sex: &quot;男&quot;,
+                tel: &quot;12222222333&quot;,
+                birth_year: &quot;2000&quot;,
+                school_id: &quot;B0FFGAPLTR&quot;,
+                school_name: &quot;xxxxxxxx&quot;,
+                grade_id: &quot;g01&quot;,
+                grade_name: &quot;一年级&quot;,
+                class_id: &quot;c01&quot;,
+                class_name: &quot;一班&quot;,
+                add_time: NumberLong(1594363774)
+            },
+            {
+                p_id: &quot;nxM81594365730&quot;,
+                name: &quot;cofl222&quot;,
+                sex: &quot;男&quot;,
+                tel: &quot;19999222233&quot;,
+                birth_year: &quot;2000&quot;,
+                school_id: &quot;xxxxxxx&quot;,
+                school_name: &quot;xxxxxxx&quot;,
+                grade_id: &quot;g01&quot;,
+                grade_name: &quot;一年级&quot;,
+                class_id: &quot;c01&quot;,
+                class_name: &quot;一班&quot;,
+                add_time: NumberLong(1594365730)
+            }
+        ],
+        parents: [
+            {
+            	   openid: &quot;xxxxxxxxxxxx&quot;,
+                nickname: &quot;cofl&quot;,
+                sex: 1,
+                city: &quot;朝阳&quot;,
+                province: &quot;北京&quot;,
+                country: &quot;中国&quot;
+            }
+        ]
+    }
+</code></pre><h3 id="具体遇到的问题">具体遇到的问题</h3>
+<ol>
+<li>父母及孩子都是内嵌数组，所以需要对MongoDB内嵌array的增删改查</li>
+<li>在某些场景需要将所有的学生（孩子）信息进行列表展示，所以我们需要将学生信息查询出来
+<ul>
+<li>首先我们排除直接查询所有文档然后在进行遍历组合学生list的方案</li>
+<li>再次我们希望能通过sql直接查询到所有学生并可以进行排序，以及支持页面分页展示。</li>
+</ul>
+</li>
+</ol>
+<h3 id="请开始你的表演">请开始你的表演</h3>
+<blockquote>
+<p><strong>项目使用golang进行的开发，所以引用的部分代码均为golang代码</strong></p>
+</blockquote>
+<ol>
+<li>
+<p><strong>MongoDB内嵌数组的的操作。</strong> <a href="https://docs.mongodb.com/manual/reference/operator/update/set/#up._S_set" target="_blank" rel="noopener noreffer">所有操作：mongodb 官方文档</a></p>
+<p><em><strong>添加插入</strong></em></p>
+<blockquote>
+<p>插入&mdash;当父母初次添加孩子信息时，我们需要将孩子信息添加到patients内嵌数组中,此时我们可以使用官方文档中的<em><strong>$push</strong></em></p>
+</blockquote>
+<pre><code>filter = bson.M{&quot;parents.openid&quot;: openid}
+update = bson.M{&quot;$push&quot;: bson.M{&quot;patients&quot;: patient}}
+option := options.Update()
+result, err := db.UpdateOne(ctx, filter, update, option)
+</code></pre><p>``
+这样我们就可以在文档patients数组中添加一个孩子的信息。</p>
+<blockquote>
+<p>在MongoDB的官方文档中我们还发现<em><strong>$addToSet</strong></em></p>
+<blockquote>
+<p>文档描述 ：The $addToSet operator adds a value to an array unless the value is already present, in which case $addToSet does nothing to that array.</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<p>我个人理解就是 $addToSet会看数组中有没有要追加的内容，如果有就不再追加，如果没有就进行追加。有时间可以自己尝试一下。</p>
+</blockquote>
+</blockquote>
+<p><em><strong>更新</strong></em></p>
+<blockquote>
+<p>更新修改&mdash;当父母需要更新修改孩子的信息时，我们需要更新文档中patients内嵌数组中的某一条信息，此时我们可以使用<em><strong>$set</strong></em></p>
+</blockquote>
+<pre><code>filter = bson.M{&quot;parents.openid&quot;: openid, &quot;patients.p_id&quot;: patient.PId}
+   
+//如果是更新整个文档使用bson.M{&quot;patients.$&quot;: patient}
+update = bson.M{&quot;$set&quot;: bson.M{&quot;patients.$&quot;: patient}}
+   
+//如果是更新文档中的某个值可以使用bson.M{&quot;patients.$.name&quot;: &quot;cofl888&quot;}
+update = bson.M{&quot;$set&quot;: bson.M{&quot;patients.$.name&quot;: &quot;cofl888&quot;}}
+   
+option := options.Update()
+result, err := db.UpdateOne(ctx, filter, update, option)
+</code></pre><p>``
+这样我们就可以实现内嵌数组中一条信息的修改更新。</p>
+<blockquote>
+<p><em><strong>需要注意的是目前我暂时只能做到单个属性修改或者整条数据更新，没有找到可以只更新内嵌文档中一条数据的某几个字段的方法，如有知道的还请告知补充</strong></em></p>
+</blockquote>
+</li>
+<li>
+<p><strong>通过使用MongoDB的聚合查询来实现学生列表的查询。</strong> <a href="https://docs.mongodb.com/manual/reference/operator/aggregation/" target="_blank" rel="noopener noreffer">同样给出官方文档，方便查看</a></p>
+<blockquote>
+<p>MongoDB的聚合查询重点是pipeline（管道）操作，此次我们主要用到了<em><strong>$unwind</strong></em> ,首先先看下具体的代码实现</p>
+</blockquote>
+<pre><code class="language-option" data-lang="option">db, ctx := mongoDb(&quot;user&quot;)
+pipeline := []bson.M{bson.M{&quot;$unwind&quot;: &quot;$patients&quot;},
+    bson.M{&quot;$project&quot;: bson.M{&quot;_id&quot;: 1, &quot;parents&quot;: 1, &quot;patient&quot;: &quot;$patients&quot;}},
+    bson.M{&quot;$sort&quot;:bson.M{&quot;patient.add_time&quot;:-1}},
+    bson.M{&quot;$skip&quot;: (page - 1) * limit},
+    bson.M{&quot;$limit&quot;: limit}}
+
+cur, err1 := db.Aggregate(ctx, pipeline, option)
+</code></pre><p>``</p>
+<blockquote>
+<p><em><strong>$unwin的官方文档解释</strong></em></p>
+<p>Deconstructs an array field from the input documents to output a document for each element. Each output document is the input document with the value of the array field replaced by the element.</p>
+<p>大概意思：将文档中的某一个数组类型字段拆分成多条，每条包含数组中的一个值。</p>
+</blockquote>
+<p><em><strong>重点看下上面查询的几个要点</strong></em></p>
+<blockquote>
+<ul>
+<li><strong>$unwind</strong> 实现内嵌数组拆解</li>
+<li>bson.M{&ldquo;$project&rdquo;: bson.M{&quot;_id&rdquo;: 1, &ldquo;parents&rdquo;: 1, &ldquo;patient&rdquo;: &ldquo;$patients&rdquo;}}, 实现控制查询哪些字段；&ldquo;patient&rdquo;: &ldquo;$patients&quot;实现了拆解内嵌数组后字段修改名字的作用
+<em><strong>$limit和$skip是我们很常用的分页用到的，这里要特别说明一下在这里使用时，他们两个的先后顺序很重要，上面代码会先进性skip然后在进行limit，如果换成下面的顺序，则会先进行limit，然后进行skip就会导致查询不到数据</strong></em></li>
+</ul>
+</blockquote>
+<pre><code>pipeline := []bson.M{bson.M{&quot;$unwind&quot;: &quot;$patients&quot;},
+    bson.M{&quot;$project&quot;: bson.M{&quot;_id&quot;: 1, &quot;parents&quot;: 1, &quot;patient&quot;: &quot;$patients&quot;}},
+    bson.M{&quot;$sort&quot;:bson.M{&quot;patient.add_time&quot;:-1}},
+    bson.M{&quot;$limit&quot;: limit}}
+    bson.M{&quot;$skip&quot;: (page - 1) * limit},
+</code></pre><p>``</p>
+<p><em><strong>看下实际输出结果</strong></em></p>
+<blockquote>
+<p>原本是一个文档，查询结果变成了一个数组，仔细看对比一下原文档，我们会发现其实是把patients内嵌数组的每一项和文档其他项组合成了一个新文档，数组数量就是patients内嵌数组的item数量，这样正好就是我们想要的学生列表的形式。</p>
+</blockquote>
+<pre><code>[
+  {
+    &quot;id&quot;: &quot;5f06ae15cf20bc8fea5cf982&quot;,
+    &quot;parents&quot;: [
+      {
+        &quot;subscribe&quot;: 0,
+        &quot;openid&quot;: &quot;xxxxxxx&quot;,
+        &quot;nickname&quot;: &quot;cofl&quot;,
+        &quot;sex&quot;: 1,
+        &quot;city&quot;: &quot;朝阳&quot;,
+        &quot;province&quot;: &quot;北京&quot;,
+        &quot;country&quot;: &quot;中国&quot;
+      }
+    ],
+    &quot;patient&quot;: {
+      &quot;p_id&quot;: &quot;nxM81594365730&quot;,
+      &quot;name&quot;: &quot;cofl222&quot;,
+      &quot;sex&quot;: &quot;男&quot;,
+      &quot;tel&quot;: &quot;19999222233&quot;,
+      &quot;birth_year&quot;: &quot;2000&quot;,
+      &quot;school_id&quot;: &quot;B0FFGAPLTR&quot;,
+      &quot;school_name&quot;: &quot;东交民巷小学马坊分校&quot;,
+      &quot;grade_id&quot;: &quot;g01&quot;,
+      &quot;grade_name&quot;: &quot;一年级&quot;,
+      &quot;class_id&quot;: &quot;c01&quot;,
+      &quot;class_name&quot;: &quot;一班&quot;,
+      &quot;add_time&quot;: 1594365730
+    }
+  },
+  {
+    &quot;id&quot;: &quot;5f06ae15cf20bc8fea5cf982&quot;,
+    &quot;parents&quot;: [
+      {
+        &quot;subscribe&quot;: 0,
+        &quot;openid&quot;: &quot;xxxxxxxxx&quot;,
+        &quot;nickname&quot;: &quot;cofl&quot;,
+        &quot;sex&quot;: 1,
+        &quot;city&quot;: &quot;朝阳&quot;,
+        &quot;province&quot;: &quot;北京&quot;,
+        &quot;country&quot;: &quot;中国&quot;
+      }
+    ],
+    &quot;patient&quot;: {
+      &quot;p_id&quot;: &quot;nxM81594363774&quot;,
+      &quot;name&quot;: &quot;cofl111&quot;,
+      &quot;sex&quot;: &quot;男&quot;,
+      &quot;tel&quot;: &quot;12222222333&quot;,
+      &quot;birth_year&quot;: &quot;2000&quot;,
+      &quot;school_id&quot;: &quot;B0FFGAPLTR&quot;,
+      &quot;school_name&quot;: &quot;xxxxxxx&quot;,
+      &quot;grade_id&quot;: &quot;g01&quot;,
+      &quot;grade_name&quot;: &quot;一年级&quot;,
+      &quot;class_id&quot;: &quot;c01&quot;,
+      &quot;class_name&quot;: &quot;一班&quot;,
+      &quot;add_time&quot;: 1594363774
+    }
+  },
+  {
+    &quot;id&quot;: &quot;5f06ae15cf20bc8fea5cf982&quot;,
+    &quot;parents&quot;: [
+      {
+        &quot;subscribe&quot;: 0,
+        &quot;openid&quot;: &quot;xxxxxxx&quot;,
+        &quot;nickname&quot;: &quot;cofl&quot;,
+        &quot;sex&quot;: 1,
+        &quot;city&quot;: &quot;朝阳&quot;,
+        &quot;province&quot;: &quot;北京&quot;,
+        &quot;country&quot;: &quot;中国&quot;,
+      }
+    ],
+    &quot;patient&quot;: {
+      &quot;p_id&quot;: &quot;nxM81594361333&quot;,
+      &quot;name&quot;: &quot;cofl&quot;,
+      &quot;sex&quot;: &quot;男&quot;,
+      &quot;tel&quot;: &quot;12222222222&quot;,
+      &quot;birth_year&quot;: &quot;2000&quot;,
+      &quot;school_id&quot;: &quot;B0FFGAPLTR&quot;,
+      &quot;school_name&quot;: &quot;xxxxxx&quot;,
+      &quot;grade_id&quot;: &quot;g01&quot;,
+      &quot;grade_name&quot;: &quot;一年级&quot;,
+      &quot;class_id&quot;: &quot;c01&quot;,
+      &quot;class_name&quot;: &quot;一班&quot;,
+      &quot;add_time&quot;: 1594361333
+    }
+  }
+]
+</code></pre><p>``</p>
+<h3 id="总结">总结</h3>
+<ul>
+<li>MongoDB作为比较常用的非关系型数据，文档结构很灵活。在数据库结构设计的时候我们可以有更多的可能性</li>
+<li>个人觉得内嵌数组对于MongoDB来说也比较重要，能够有效的扩展文档结构，刚开始使用的时候可能会直接查处整个文档然后修改完在更新回去&hellip;（狗头），MongoDB发展到现在功能已经和完善，各个语言的driver也都比较成熟。最重要的还是要多去看看<a href="https://docs.mongodb.com/manual/reference/operator/" target="_blank" rel="noopener noreffer">官方的文档</a></li>
+<li>这次主要是根据开发中遇到的情景简单介绍了MongoDB的Array和聚合查询Aggregate。</li>
+</ul>
+<blockquote>
+<p>以上内容为本人真实代码验证过的，如阐述如有差错的还请各位能纠正补充。</p>
+</blockquote>
+</li>
+</ol>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2020-07-13</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/mongodb/">MongoDB</a>,&nbsp;<a href="/tags/%E8%81%9A%E5%90%88%E6%9F%A5%E8%AF%A2/">聚合查询</a>,&nbsp;<a href="/tags/mongodb%E5%86%85%E5%B5%8C%E6%95%B0%E7%BB%84/">MongoDB内嵌数组</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/first/" class="prev" rel="prev" title="为什么开了这个博客？"><i class="fas fa-angle-left fa-fw"></i>为什么开了这个博客？</a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2020</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="http://www.cofl.top" target="_blank">Cofl</a></span><span class="icp-splitter">&nbsp;|&nbsp;</span><br class="icp-br"/>
+                    <span class="icp">京ICP备18027384号-1</span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><script type="text/javascript" src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>
